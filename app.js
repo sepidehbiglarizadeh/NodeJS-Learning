@@ -3,11 +3,17 @@ let users = require("./users");
 const app = express(); //? returns an object
 const { body, validationResult } = require("express-validator");
 const helmet = require("helmet");
+const morgan = require("morgan");
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static("public"));
 app.use(helmet());
+
+if (app.get("env") === "development") {
+  console.log("morgan is active");
+  app.use(morgan("tiny"));
+}
 
 app.get("/api/users", (req, res) => {
   res.json({
