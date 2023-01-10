@@ -1,12 +1,10 @@
-const fs = require("fs");
+const EventEmitter = require("events"); //? returns a class
 
-//* sync
-const files = fs.readdirSync("./"); //? returns the files in the path
-console.log(files);
+const emitter = new EventEmitter();
 
-//* Async
-const files2 = fs.readdir("./", (err, file) => {
-  console.log(err);
-  console.log(file);
+//? event
+emitter.on("bell", () => {
+  console.log("open the door");
 });
-console.log("Hello");
+
+emitter.emit("bell"); //? call the event
