@@ -4,11 +4,16 @@ const app = express(); //? returns an object
 const { body, validationResult } = require("express-validator");
 const helmet = require("helmet");
 const morgan = require("morgan");
+const config = require("config");
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static("public"));
 app.use(helmet());
+
+console.log("Application Name: ", config.get("name"));
+console.log("Application Version: ", config.get("version"));
+console.log("SMS: ", config.get("SMS"));
 
 if (app.get("env") === "development") {
   console.log("morgan is active");
