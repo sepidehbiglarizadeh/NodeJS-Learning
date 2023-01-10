@@ -1,5 +1,5 @@
 const express = require("express"); //? returns a function
-const users = require("./users");
+let users = require("./users");
 const app = express(); //? returns an object
 const { body, validationResult } = require("express-validator");
 
@@ -36,15 +36,49 @@ app.post(
   (req, res) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
-      return res
-        .status(400)
-        .json({
-          data: null,
-          errors: errors.array(),
-          message: "validation error",
-        });
+      return res.status(400).json({
+        data: null,
+        errors: errors.array(),
+        message: "validation error",
+      });
     }
     users.push({ id: users.length + 1, ...req.body });
+    res.json({
+      data: users,
+      message: "ok",
+    });
+  }
+);
+
+app.put(
+  "/api/users/:id",
+  [
+    body("email", "email must be valid").isEmail(),
+    body("first_name", "first name cant be empty").notEmpty(),
+    body("last_name", "last name cant be empty").notEmpty(),
+  ],
+  (req, res) => {
+    const user = users.find((u) => u.id === parseInt(req.params.id));
+    if (!user) {
+      return res.status(404).json({
+        data: null,
+        message: "user with given id was not found",
+      });
+    }
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(400).json({
+        data: null,
+        errors: errors.array(),
+        message: "validation error",
+      });
+    }
+    users = users.map((user) => {
+      if (user.id === parseInt(req.params.id)) {
+        return {...user,...req.body };
+      }
+      return user;
+    });
     res.json({
       data: users,
       message: "ok",
