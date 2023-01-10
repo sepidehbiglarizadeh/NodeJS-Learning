@@ -4,6 +4,7 @@ const app = express(); //? returns an object
 const { body, validationResult } = require("express-validator");
 
 app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 
 app.use((req, res, next) => {
   req.body.userName = "test";
