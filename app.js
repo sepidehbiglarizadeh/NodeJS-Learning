@@ -1,6 +1,8 @@
 const express = require("express"); //? returns a function
 const users = require("./users");
 const app = express(); //? returns an object
+const { body, validationResult } = require("express-validator");
+
 app.use(express.json());
 
 app.get("/api/users", (req, res) => {
@@ -24,13 +26,31 @@ app.get("/api/users/:id", (req, res) => {
   });
 });
 
-app.post("/api/users", (req, res) => {
-  users.push({ id: users.length + 1, ...req.body });
-  res.json({
-    data: users,
-    message: "ok",
-  });
-});
+app.post(
+  "/api/users",
+  [
+    body("email", "email must be valid").isEmail(),
+    body("first_name", "first name cant be empty").notEmpty(),
+    body("last_name", "last name cant be empty").notEmpty(),
+  ],
+  (req, res) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res
+        .status(400)
+        .json({
+          data: null,
+          errors: errors.array(),
+          message: "validation error",
+        });
+    }
+    users.push({ id: users.length + 1, ...req.body });
+    res.json({
+      data: users,
+      message: "ok",
+    });
+  }
+);
 
 const port = process.env.PORT || 3000;
 app.listen(port, () => console.log(`listening on port ${port}`));
