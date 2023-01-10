@@ -75,7 +75,7 @@ app.put(
     }
     users = users.map((user) => {
       if (user.id === parseInt(req.params.id)) {
-        return {...user,...req.body };
+        return { ...user, ...req.body };
       }
       return user;
     });
@@ -85,6 +85,22 @@ app.put(
     });
   }
 );
+
+app.delete("/api/users/:id", (req, res) => {
+  const user = users.find((u) => u.id === parseInt(req.params.id));
+  if (!user) {
+    return res.status(404).json({
+      data: null,
+      message: "the user with the given id was not found",
+    });
+  }
+  const index = users.indexOf(user);
+  users.splice(index, 1);
+  res.json({
+    data: users,
+    message: "ok",
+  });
+});
 
 const port = process.env.PORT || 3000;
 app.listen(port, () => console.log(`listening on port ${port}`));
