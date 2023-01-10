@@ -1,6 +1,14 @@
 const express = require("express"); //? returns a function
 const users = require("./users");
 const app = express(); //? returns an object
+app.use(express.json());
+
+app.get("/api/users", (req, res) => {
+  res.json({
+    data: users,
+    message: "ok",
+  });
+});
 
 app.get("/api/users/:id", (req, res) => {
   const user = users.find((u) => u.id === parseInt(req.params.id));
@@ -12,6 +20,14 @@ app.get("/api/users/:id", (req, res) => {
   }
   res.json({
     data: user,
+    message: "ok",
+  });
+});
+
+app.post("/api/users", (req, res) => {
+  users.push({ id: users.length + 1, ...req.body });
+  res.json({
+    data: users,
     message: "ok",
   });
 });
