@@ -5,11 +5,31 @@ const { body, validationResult } = require("express-validator");
 
 app.use(express.json());
 
+app.use((req, res, next) => {
+  req.body.userName = "test";
+  req.user = { id: 1, name: "test1" };
+  // res.send("this response is coming from middleware1");
+  console.log("midd1");
+  next();
+});
+
+app.use((req, res, next) => {
+  console.log("midd2");
+  console.log(req.body);
+  console.log(req.user);
+  next();
+});
+
 app.get("/api/users", (req, res) => {
   res.json({
     data: users,
     message: "ok",
   });
+});
+
+app.use((req, res, next) => {
+  console.log("midd3");
+  next();
 });
 
 app.get("/api/users/:id", (req, res) => {
