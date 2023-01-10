@@ -1,13 +1,18 @@
-const http = require("http");
+const express = require("express"); //? returns a function
 
-// * create server
-const server = http.createServer((req, res) => {
-  //* create a simple router
-  if (req.url === "/") res.write("Home Page");
-  else if (req.url === "/products")
-    res.write(JSON.stringify({ products: ["product1", "product2"] }));
-  else res.write("Not Found");
-  res.end();
+const app = express(); //? returns an object
+
+//* create an api
+app.get("/", (req, res) => {
+  res.send("Hello express");
 });
 
-server.listen(3000);
+app.get("/api/users", (req, res) => {
+  res.send([
+    { id: 1, name: "user1" },
+    { id: 12, name: "user2" },
+  ]);
+});
+
+const port = process.env.PORT || 3000;
+app.listen(port, () => console.log(`listening on port ${port}`));
