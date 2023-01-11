@@ -14,12 +14,19 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.static("public"));
 app.use(helmet());
 
+app.set("view engine", "ejs");
+app.set("views", "./views");
+
 if (app.get("env") === "development") {
   debug("morgan is active");
   app.use(morgan("tiny"));
 }
 
 dbdebug("Connected to db");
+
+app.get("/", (req, res) => {
+  res.render("home",{name:"Test"});
+});
 
 app.get("/api/users", (req, res) => {
   res.json({
